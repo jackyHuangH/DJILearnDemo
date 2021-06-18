@@ -1,0 +1,3 @@
+rootProject.name = "DjiLearnDemo"
+include ':app'
+include ':module_support'

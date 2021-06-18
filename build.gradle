@@ -1,0 +1,57 @@
+apply from:'config.gradle'
+
+buildscript {
+    ext.kotlin_version = "1.5.10"
+    repositories {
+        //阿里云镜像jcenter仓库
+//        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        google()
+        jcenter()
+        mavenCentral() // add repository
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.0.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        //阿里云镜像jcenter仓库
+//        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        jcenter()
+        google()
+        mavenCentral() // add repository
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+//统一所有module的依赖版本
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'androidx.annotation' && details.requested.name=='annotation') {
+                details.useVersion "1.2.0"
+            }
+            if (details.requested.group == 'androidx.lifecycle' && details.requested.name.contains('lifecycle')) {
+                details.useVersion "2.2.0"
+            }
+            if (details.requested.group == 'androidx.recyclerview') {
+                details.useVersion "1.2.0"
+            }
+            if (details.requested.group == 'com.squareup.okio' && details.requested.name.contains('okio')) {
+                details.useVersion "2.6.0"
+            }
+        }
+    }
+}

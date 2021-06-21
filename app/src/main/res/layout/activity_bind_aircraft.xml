@@ -85,6 +85,7 @@
 
         <Button
             android:id="@+id/btn_go_main"
+            android:enabled="false"
             style="@style/common_button"
             android:text="Go Main" />
     </LinearLayout>

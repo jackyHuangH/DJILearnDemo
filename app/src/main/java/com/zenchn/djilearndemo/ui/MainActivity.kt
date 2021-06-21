@@ -11,8 +11,6 @@ import com.zenchn.djilearndemo.base.BaseActivity
 import com.zenchn.djilearndemo.base.viewClickListener
 import com.zenchn.djilearndemo.base.viewExt
 import dji.common.camera.SettingsDefinitions
-import dji.common.error.DJIError
-import dji.common.util.CommonCallbacks
 import dji.sdk.products.Aircraft
 import dji.sdk.sdkmanager.DJISDKManager
 import dji.sdk.sdkmanager.LiveStreamManager
@@ -117,13 +115,16 @@ class MainActivity : BaseActivity() {
 
     // 主动获取无人机定位信息
     private fun getAircraftLocation() {
-        val aircraft = DJISDKManager.getInstance().product as? Aircraft
-        val state = aircraft?.flightController?.state
-        LoggerKit.d(
-            "aircraft Info ---altitude:${state?.aircraftLocation?.altitude}" + "latitude:${state?.aircraftLocation?.latitude}" +
-                    "longitude:${state?.aircraftLocation?.longitude}"
-        )
-
+        lifecycleScope.launch(Dispatchers.IO) {
+            for (i in 0 until 11) {
+                val aircraft = DJISDKManager.getInstance().product as? Aircraft
+                val state = aircraft?.flightController?.state
+                LoggerKit.d(
+                    "$i aircraft Info ---altitude:${state?.aircraftLocation?.altitude}" + "latitude:${state?.aircraftLocation?.latitude}" +
+                            "longitude:${state?.aircraftLocation?.longitude}"
+                )
+            }
+        }
     }
 
     override fun onDestroy() {

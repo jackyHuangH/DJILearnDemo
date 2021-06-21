@@ -66,7 +66,6 @@ class BindAircraftActivity : BaseActivity() {
         viewClickListener(R.id.btn_go_main) {
             startActivity(Intent(this, MainActivity::class.java))
         }
-        viewEnabledExt(R.id.btn_go_main, false)
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

@@ -1,0 +1,71 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+}
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+            //this way we can find the .aar file include_layout_event_fire_process_result libs folder
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    api rootProject.ext.dependencies["kotlin_stdlib"]
+    api rootProject.ext.dependencies["kotlin_reflect"]
+    api(rootProject.ext.dependencies["kotlin_coroutines_core"]) {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    api(rootProject.ext.dependencies["kotlin_coroutines_android"]) {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+
+    testImplementation rootProject.ext.dependencies["test-junit"]
+    androidTestImplementation rootProject.ext.dependencies["test-runner"]
+    androidTestImplementation rootProject.ext.dependencies["test-espresso"]
+
+    api rootProject.ext.dependencies["androidx_lifecycle_livedata"]
+    api(rootProject.ext.dependencies["androidx_core_ktx"]) {
+        exclude group: 'androidx.collection'
+    }
+    api rootProject.ext.dependencies["androidx_startup"]
+
+    implementation rootProject.ext.dependencies["andPermission"]
+    api rootProject.ext.dependencies["gson"]
+    api rootProject.ext.dependencies["toast"]
+    implementation rootProject.ext.dependencies["logger"]
+}
+
+configurations.all {
+    resolutionStrategy {
+        force rootProject.ext.dependencies["androidx_appcompat"]
+        force rootProject.ext.dependencies["androidx_fragment"]
+        force rootProject.ext.dependencies["androidx_lifecycle_livedata"]
+        force rootProject.ext.dependencies["androidx_lifecycle_runtime"]
+        force rootProject.ext.dependencies["androidx_collection"]
+        force rootProject.ext.dependencies["kotlin_reflect"]
+    }
+}
+

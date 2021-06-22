@@ -1,3 +1,13 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="app_name">DjiLearnDemo</string>
+
+    <string name="common_msg_unsupport_nfc">您的手机不支持NFC功能</string>
+    <string name="common_msg_request_enable_nfc">请先开启NFC功能!</string>
+    <string name="common_unknown_text">未知</string>
+    <string name="common_status_normal">正常</string>
+    <string name="common_status_abnormal">异常</string>
+    <string name="common_switch_on">开启</string>
+    <string name="common_switch_off">关闭</string>
+    <string name="common_next_step">下一步</string>
+    <string name="common_confirm">确定</string>
 </resources>

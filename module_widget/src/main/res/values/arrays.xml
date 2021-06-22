@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="widget_chat_colors">
+        <item>@color/color_Chart_Line_Blue</item>
+        <item>@color/color_Chart_Line_Green</item>
+        <item>@color/color_Chart_Line_Yellow</item>
+        <item>@color/color_Chart_Line_Red</item>
+        <item>@color/color_Chart_Line_Purple</item>
+        <item>@color/color_Chart_Line_Orange</item>
+        <item>@color/color_Chart_Line_Pink</item>
+        <item>@color/color_Chart_Line_Mint_Green</item>
+        <item>@color/color_Chart_Line_deep_red</item>
+    </integer-array>
+</resources>

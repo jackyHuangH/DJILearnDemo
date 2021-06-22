@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/title_bar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/common_title_bar_height"
+    android:background="@color/color_TitleBar_Bg">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_back"
+        android:layout_width="@dimen/common_title_bar_height"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:drawableStart="@drawable/ic_common_back_blue"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="16sp" />
+
+    <ViewStub
+        android:id="@+id/vs_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center"
+        android:layout="@layout/include_common_title_bar_title" />
+
+    <ViewStub
+        android:id="@+id/vs_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/tv_back"
+        android:layout="@layout/include_common_title_bar_close_button" />
+
+    <ViewStub
+        android:id="@+id/vs_right_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout="@layout/include_common_title_bar_right_button" />
+
+    <ViewStub
+        android:id="@+id/vs_right_image_button"
+        android:layout_width="@dimen/common_title_bar_height"
+        android:layout_height="@dimen/common_title_bar_height"
+        android:layout_alignParentEnd="true"
+        android:layout="@layout/include_common_title_bar_right_image_button" />
+
+    <ViewStub
+        android:id="@+id/vs_line"
+        style="@style/LineStyle.Row"
+        android:layout_alignParentBottom="true"
+        android:layout="@layout/include_common_line_row" />
+
+</RelativeLayout>

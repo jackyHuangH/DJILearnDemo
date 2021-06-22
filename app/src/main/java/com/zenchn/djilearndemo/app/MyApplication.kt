@@ -13,11 +13,11 @@ import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
 import androidx.multidex.MultiDexApplication
 import com.hjq.toast.ToastUtils
-import com.jacky.support.base.ICrashCallback
-import com.jacky.support.crash.DefaultUncaughtHandler
 import com.secneo.sdk.Helper
-import com.zenchn.djilearndemo.model.event.AircraftConnectEvent
+import com.zenchn.common.exception.CrashHandler
+import com.zenchn.djilearndemo.event.AircraftConnectEvent
 import com.zenchn.djilearndemo.ui.MainActivity
+import com.zenchn.update.CrashManager
 import dji.common.error.DJIError
 import dji.common.error.DJISDKError
 import dji.common.useraccount.UserAccountState
@@ -69,11 +69,11 @@ object ApplicationKit {
      */
     @CallSuper
     fun initCrashHandler(application: Application) {
-        DefaultUncaughtHandler.getInstance().init(application, object : ICrashCallback {
-            override fun onCrash(thread: Thread?, ex: Throwable?) {
-                GlobalLifecycleObserver.INSTANCE.exitApp()
-            }
-        })
+        //记录崩溃日志
+        CrashHandler(application, crashCallback = { thread, ex ->
+            //上传错误日志到bugly
+            CrashManager.postCrash(thread, ex)
+        }).init()
     }
 
     /**

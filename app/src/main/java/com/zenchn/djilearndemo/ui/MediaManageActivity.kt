@@ -10,13 +10,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.jacky.support.utils.DimenUtils
-import com.jacky.support.utils.LoggerKit
+import com.zenchn.common.utils.DisplayUtils
+import com.zenchn.common.utils.LoggerKit
 import com.zenchn.djilearndemo.R
 import com.zenchn.djilearndemo.app.ApplicationKit
 import com.zenchn.djilearndemo.base.*
 import com.zenchn.djilearndemo.ui.adapter.FileListAdapter
 import com.zenchn.djilearndemo.widget.dialog.DownloadDialog
+import com.zenchn.widget.viewClickListenerExt
+import com.zenchn.widget.viewExt
+import com.zenchn.widget.viewInVisibleExt
+import com.zenchn.widget.viewVisibleExt
 import dji.common.camera.SettingsDefinitions
 import dji.common.error.DJICameraError
 import dji.common.error.DJIError
@@ -54,7 +58,7 @@ class MediaManageActivity : BaseActivity() {
     private val mDownloadDialog by lazy {
         DownloadDialog {
             mMediaManager?.exitMediaDownloading()
-        }.setWidth(DimenUtils.dp2px(360))
+        }.setWidth(DisplayUtils.dp2px(360))
     }
     private val destDir: File = File(Environment.getExternalStorageDirectory().getPath().toString() + "/DJiMedia/")
     private var currentProgress = -1
@@ -103,31 +107,31 @@ class MediaManageActivity : BaseActivity() {
     }
 
     private fun initListener() {
-        viewClickListener(R.id.back_btn) { onBackPressed() }
-        viewClickListener(R.id.delete_btn) {
+        viewClickListenerExt(R.id.back_btn) { onBackPressed() }
+        viewClickListenerExt(R.id.delete_btn) {
             if (checkSelectState()) {
                 deleteFileByIndex(lastClickViewIndex)
             }
         }
-        viewClickListener(R.id.reload_btn) {
+        viewClickListenerExt(R.id.reload_btn) {
             if (ApplicationKit.aircraftIsConnect().not()) {
                 showMessage("飞机未连接")
-                return@viewClickListener
+                return@viewClickListenerExt
             }
             lifecycleScope.launch(Dispatchers.IO) {
                 showProgress()
                 getFileList()
             }
         }
-        viewClickListener(R.id.download_btn) {
+        viewClickListenerExt(R.id.download_btn) {
             if (checkSelectState()) {
                 downloadFileByIndex(lastClickViewIndex)
             }
         }
-        viewClickListener(R.id.play_btn) {
+        viewClickListenerExt(R.id.play_btn) {
             playVideo()
         }
-        viewClickListener(R.id.resume_btn) {
+        viewClickListenerExt(R.id.resume_btn) {
             mMediaManager?.resume { error ->
                 if (null != error) {
                     showMessage("Resume Video Failed" + error.description)
@@ -136,7 +140,7 @@ class MediaManageActivity : BaseActivity() {
                 }
             }
         }
-        viewClickListener(R.id.pause_btn) {
+        viewClickListenerExt(R.id.pause_btn) {
             mMediaManager?.pause { error ->
                 if (null != error) {
                     showMessage("Pause Video Failed" + error.description)
@@ -145,7 +149,7 @@ class MediaManageActivity : BaseActivity() {
                 }
             }
         }
-        viewClickListener(R.id.stop_btn) {
+        viewClickListenerExt(R.id.stop_btn) {
             //停止回放
             mMediaManager?.stop { error ->
                 if (null != error) {
@@ -155,10 +159,10 @@ class MediaManageActivity : BaseActivity() {
                 }
             }
         }
-        viewClickListener(R.id.moveTo_btn) {
+        viewClickListenerExt(R.id.moveTo_btn) {
             moveToPosition()
         }
-        viewClickListener(R.id.btn_status) {
+        viewClickListenerExt(R.id.btn_status) {
             viewExt<ScrollView>(R.id.pointing_drawer_content) {
                 visibility = if (visibility == View.VISIBLE) View.GONE else View.VISIBLE
             }
@@ -405,7 +409,7 @@ class MediaManageActivity : BaseActivity() {
     private fun playVideo() {
         val selectedMediaFile = mediaFileList[lastClickViewIndex]
         if (selectedMediaFile.mediaType == MediaFile.MediaType.MOV || selectedMediaFile.mediaType == MediaFile.MediaType.MP4) {
-            viewInvisibleExt(R.id.iv_preview, false)
+            viewInVisibleExt(R.id.iv_preview, false)
             mMediaManager?.playVideoMediaFile(selectedMediaFile) { error ->
                 if (null != error) {
                     showMessage("Play Video Failed" + error.description)
@@ -481,7 +485,7 @@ class MediaManageActivity : BaseActivity() {
 
     private fun setResultToText(string: String) {
         runOnUiThread {
-            getView<TextView>(R.id.pointing_push_tv).text = string
+            findViewWithId<TextView>(R.id.pointing_push_tv)?.text = string
         }
     }
 

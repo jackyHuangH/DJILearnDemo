@@ -6,19 +6,10 @@ package com.zenchn.djilearndemo.ui
  * desc  ：播放回放页面
  * record：
  */
-import android.app.AlertDialog
 import android.app.Application
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.EditText
-import android.widget.ScrollView
-import android.widget.TextView
 import com.zenchn.djilearndemo.R
-import com.zenchn.djilearndemo.app.ApplicationKit
 import com.zenchn.djilearndemo.base.*
-import dji.sdk.media.MediaFile
-import dji.sdk.media.MediaManager
+import com.zenchn.widget.viewClickListenerExt
 
 
 class PlaybackActivity : BaseVMActivity<PlaybackViewModel>() {
@@ -33,18 +24,16 @@ class PlaybackActivity : BaseVMActivity<PlaybackViewModel>() {
     }
 
     private fun initListener() {
-        viewClickListener(R.id.ibt_back) { onBackPressed() }
-
+        viewClickListenerExt(R.id.ibt_back) { onBackPressed() }
     }
 
-
-
-    override val startObserve: PlaybackViewModel.() -> Unit = {
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
+
+    }
+
+    override val onViewModelStartup: PlaybackViewModel.() -> Unit = {
 
     }
 }

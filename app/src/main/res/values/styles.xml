@@ -9,4 +9,12 @@
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginBottom">30dp</item>
     </style>
+
+    <style name="DialogStyle.DimAmount">
+        <!--背景是否模糊显示-->
+        <!-- 设置背景透明度 -->
+        <item name="android:backgroundDimAmount">0.75</item>
+        <!--背景是否模糊显示-->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 </resources>

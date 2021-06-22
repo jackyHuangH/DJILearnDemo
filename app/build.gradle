@@ -8,26 +8,38 @@ apply from: 'dependence.gradle'
 apply from: 'product.gradle'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
 
     defaultConfig {
         applicationId "com.zenchn.djilearndemo"
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionName rootProject.ext.android.versionName
+        versionCode rootProject.ext.android.versionCode
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         //开启multiDex
         multiDexEnabled true
         //无需多版本控制，gradle3.0+需要配置这句话
-        flavorDimensions "jacky"
+        flavorDimensions "zenchn"
         ndk {
             // On x86 devices that run Android API 23 or above, if the application is targeted with API 23 or
             // above, FFmpeg lib might lead to runtime crashes or warnings.
             abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a'
         }
+
+        manifestPlaceholders = [
+                PACKAGE_NAME         : PACKAGE_NAME,
+                GD_MAP_API_KEY       : GD_MAP_API_KEY,
+                BD_MAP_API_KEY       : BD_MAP_API_KEY,
+                JPUSH_PKGNAME        : PACKAGE_NAME,
+                JPUSH_APPKEY         : JG_ACCESS_KEY,
+                JPUSH_CHANNEL        : JG_ACCESS_CHANNEL,
+                QQ_APPID_VALUE       : QQ_APP_ID,
+                WECHAT_APPID_VALUE   : WECHAT_APP_ID,
+                APK_CREATE_TIME_VALUE: System.currentTimeMillis()
+        ]
     }
 
     sourceSets {
@@ -64,6 +76,14 @@ android {
             shrinkResources false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            manifestPlaceholders = [
+                    BASE_HOST_VALUE      : BASE_HTTP_URL_VALUE,
+                    REST_API_PREFIX_VALUE: REST_API_PREFIX_VALUE,
+                    UPDATE_URL_VALUE     : UPDATE_HTTP_URL_VALUE,
+                    PGY_APPID_VALUE      : PGY_APPID_VALUE,
+                    BUGLY_APPID_VALUE    : BUGLY_APPID_VALUE,
+            ]
         }
 
         debug {
@@ -71,6 +91,14 @@ android {
             shrinkResources false
             signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            manifestPlaceholders = [
+                    BASE_HOST_VALUE      : TEST_BASE_HTTP_URL_VALUE,
+                    REST_API_PREFIX_VALUE: TEST_REST_API_PREFIX_VALUE,
+                    UPDATE_URL_VALUE     : TEST_UPDATE_HTTP_URL_VALUE,
+                    PGY_APPID_VALUE      : TEST_PGY_APPID_VALUE,
+                    BUGLY_APPID_VALUE    : TEST_BUGLY_APPID_VALUE,
+            ]
         }
     }
 

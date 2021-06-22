@@ -3,9 +3,9 @@ package com.zenchn.djilearndemo.widget.dialog
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.jacky.support.setOnAntiShakeClickListener
 import com.zenchn.djilearndemo.R
-import com.zenchn.djilearndemo.base.childViewExt
+import com.zenchn.widget.childViewExt
+import com.zenchn.widget.setOnAntiShakeClickListener
 
 /**
  * @author:Hzj

@@ -103,14 +103,17 @@ class GlobalLifecycleObserver : DefaultLifecycleObserver {
         val INSTANCE = GlobalLifecycleObserver()
 
         //重新启动到MainActivity
-        fun restartToMain(gotoLogin: Boolean = false) {
-//            INSTANCE.getTopActivity().navigateToRestart(gotoLogin)
+        fun apiRefusedToLogin() {
+            //登录超时或者账号被挤掉,回到登录页
+//            INSTANCE.getTopActivity().navigateToRestart(gotoLogin = true)
         }
 
         //重新闪屏页Splash启动
         fun restartSplash() {
 //            INSTANCE.getTopActivity().navigateToSplash()
         }
+
+
     }
 }
 

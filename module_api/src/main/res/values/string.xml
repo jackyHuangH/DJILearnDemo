@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_api_message_default_exception">系统升级维护中，请稍后再试</string>
+    <string name="common_api_message_proxy_unavailable">连接失败，请检查你的wifi代理</string>
+    <string name="common_api_message_404_not_found">找不到访问资源，请稍后再试</string>
+    <string name="common_api_message_auth_exception">登录超时或账号在别处登录，请重新登录</string>
+    <string name="common_api_message_connect_exception">连接服务器失败，请稍后再试</string>
+    <string name="common_api_message_socket_timeout_exception">连接服务器超时，请稍后再试</string>
+    <string name="common_api_message_network_not_available">网络错误，请检查您的网络</string>
+</resources>

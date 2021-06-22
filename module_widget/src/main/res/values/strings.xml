@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_title_bar_close">关闭</string>
+    <string name="common_no_data">暂无数据…</string>
+    <string name="common_no_data_placeholder">暂无</string>
+    <string name="common_picker_title">请选择</string>
+    <string name="common_picker_cancel">取消</string>
+    <string name="common_picker_submit">确定</string>
+    <string name="common_sheet_cancel">取消</string>
+    <string name="common_load_end">我是有底线的</string>
+    <string name="common_load_failed">加载失败，请点我重试</string>
+    <string name="common_loading">拼命加载中…</string>
+    <string name="common_mark">*</string>
+</resources>

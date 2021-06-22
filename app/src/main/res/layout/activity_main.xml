@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/background_blue">
 
     <!-- Widget to see first person view (FPV) -->
@@ -167,12 +168,12 @@
             android:text="开始rtmp推流" />
 
         <Button
-            android:id="@+id/btn_info"
+            android:id="@+id/btn_live_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/btn_start_rtmp"
             android:layout_toEndOf="@+id/btn_start_rtmp"
-            android:text="show Info" />
+            android:text="show live Info" />
 
         <Button
             android:id="@+id/btn_waypoint"
@@ -183,12 +184,12 @@
             android:text="waypoint" />
 
         <Button
-            android:id="@+id/btn_set_mode"
+            android:id="@+id/btn_sensor_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_start_rtmp"
             android:layout_toEndOf="@+id/btn_waypoint"
-            android:text="setMode" />
+            android:text="sensor base info" />
 
     </RelativeLayout>
 

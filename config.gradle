@@ -10,21 +10,33 @@ ext {
             versionName      : '1.0.0'
     ]
 
+    github = [
+
+            RetrofitVersion       : '2.6.2',
+            OkhttpVersion         : '4.2.2',
+            MaterialDialogsVersion: '3.3.0',
+    ]
+
     dependencies = [
-            "junit"                          : 'junit:junit:4.12',
-            "kotlin_std"                     : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+            "test-runner"                    : "androidx.test:runner:1.2.0",
+            "test-espresso"                  : "androidx.test.espresso:espresso-core:3.2.0",
+            "test-junit"                     : "junit:junit:4.13",
+
+            "kotlin_stdlib"                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
             "kotlin_reflect"                 : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
+            "kotlin_coroutines_core"         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5",
+            "kotlin_coroutines_android"      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5",
             //工具类
             "androidx_multidex"              : "androidx.multidex:multidex:2.0.1",
             //android support
-            "andriodx_appcompat"             : "androidx.appcompat:appcompat:1.2.0",
+            "androidx_appcompat"             : "androidx.appcompat:appcompat:1.2.0",
             "androidx_annotations"           : "androidx.annotation:annotation:1.2.0",
             "androidx_fragment"              : "androidx.fragment:fragment:1.2.0",
             "androidx_activity"              : "androidx.activity:activity:1.2.2",
             "androidx_core"                  : "androidx.core:core:1.3.2",
             "androidx_arch_core"             : "androidx.arch:core:2.1.0",
             "androidx_core_ktx"              : "androidx.core:core-ktx:1.3.2",
-            "androidx_constraint_layout"     : "androidx.constraintlayout:constraintlayout:1.1.3",
+            "androidx_constraintLayout"      : "androidx.constraintlayout:constraintlayout:1.1.3",
             "androidx_recyclerview"          : "androidx.recyclerview:recyclerview:1.2.0",
             "androidx_cardview"              : "androidx.cardview:cardview:1.0.0",
             "androidx_gridLayout"            : "androidx.gridlayout:gridlayout:1.0.0",
@@ -42,14 +54,13 @@ ext {
             "androidx_lifecycle_livedata_ktx": 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0',
             "androidx_lifecycle_extensions"  : "androidx.lifecycle:lifecycle-extensions:2.1.0",
             "androidx_material_design"       : "com.google.android.material:material:1.0.0",
+            "androidx_swiperefreshlayout"    : 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0',
             "androidx_startup"               : "androidx.startup:startup-runtime:1.0.0",
 
             "flexbox"                        : "com.google.android:flexbox:1.1.1",
             // 引入kotlin协程
             "coroutine_core"                 : 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1',
             "coroutine_android"              : 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1',
-
-            "module_support"                 : project(':module_support'),
 
             //DJI---
             "dji_sdk"                        : 'com.dji:dji-sdk:4.14.1',
@@ -70,7 +81,7 @@ ext {
             //glide加载进度监听
             "progressmanager"                : 'me.jessyan:progressmanager:1.5.0',
 
-            "banner"                         : 'com.youth.banner:banner:2.0.10',
+            "bga-banner"                     : "cn.bingoogolapple:bga-banner:3.0.0@aar",
 
             //baseAdapter ForRecyclerView
             "brvah"                          : 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4',
@@ -86,27 +97,38 @@ ext {
 
             //logger
             "logger"                         : 'com.orhanobut:logger:2.1.1',
+            "notify"                         : "io.karn:notify:1.4.0",
+            "spinKit"                        : "com.github.ybq:Android-SpinKit:1.4.0",
+
+            "zxing"                          : "com.google.zxing:core:3.3.0",
+            "zxing-wrapper"                  : "cn.bingoogolapple:bga-qrcode-zxing:1.3.7",
+            "zbar-wrapper"                   : "cn.bingoogolapple:bga-qrcode-zbar:1.3.7",
 
             //OSS
             "ali_OSS"                        : 'com.aliyun.dpa:oss-android-sdk:2.9.2',
 
-            //okhttp
-            "okhttp"                         : 'com.squareup.okhttp3:okhttp:3.11.0',
             "okio"                           : 'com.squareup.okio:okio:2.6.0',
-            "okhttp_interceptor"             : 'com.squareup.okhttp3:logging-interceptor:3.11.0',
             // Android 支持 Retrofit
-            "retrofit"                       : 'com.squareup.retrofit2:retrofit:2.6.0',
-            "retrofit_converter_scalars"     : 'com.squareup.retrofit2:converter-scalars:2.6.0',
-            "retrofit_rxjava2_adapter"       : 'com.squareup.retrofit2:adapter-rxjava2:2.6.0',
-            "retrofit_converter_gson"        : 'com.squareup.retrofit2:converter-gson:2.6.0',
+            "retrofit"                       : "com.squareup.retrofit2:retrofit:${github["RetrofitVersion"]}",
+            "converter-scalars"              : "com.squareup.retrofit2:converter-scalars:${github["RetrofitVersion"]}",
+            "converter-gson"                 : "com.squareup.retrofit2:converter-gson:${github["RetrofitVersion"]}",
+            "converter-jackson"              : "com.squareup.retrofit2:converter-jackson:${github["RetrofitVersion"]}",
+            "adapter-rxjava"                 : "com.squareup.retrofit2:adapter-rxjava:${github["RetrofitVersion"]}",
+            "adapter-rxjava2"                : "com.squareup.retrofit2:adapter-rxjava2:${github["RetrofitVersion"]}",
+            "adapter-kotlin"                 : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2",
+            "okhttp"                         : "com.squareup.okhttp3:okhttp:${github["OkhttpVersion"]}",
+            "okhttp-logging"                 : "com.squareup.okhttp3:logging-interceptor:${github["OkhttpVersion"]}",
+            "cookie-manager"                 : "com.github.franmontiel:PersistentCookieJar:v1.0.1",
             //阿里出品,fastjson
             "fastjson"                       : 'com.alibaba:fastjson:1.2.44',
+            "gson"                           : "com.google.code.gson:gson:2.8.5",
             //https cookie
             "cookieJar"                      : 'com.github.franmontiel:PersistentCookieJar:v1.0.1',
 
             //3.1.0use kotlin
-            "material_dialogs"               : "com.afollestad.material-dialogs:core:3.3.0",
-            "material_dialogs_lifecycle"     : "com.afollestad.material-dialogs:lifecycle:3.3.0",
+            "material_dialogs_core"          : "com.afollestad.material-dialogs:core:${github["MaterialDialogsVersion"]}",
+            "material_dialogs_bottomsheets"  : "com.afollestad.material-dialogs:bottomsheets:${github["MaterialDialogsVersion"]}",
+            "material_dialogs_lifecycle"     : "com.afollestad.material-dialogs:lifecycle:${github["MaterialDialogsVersion"]}",
             "license_dialog"                 : 'de.psdev.licensesdialog:licensesdialog:2.1.0',
             'xpop'                           : 'com.lxj:xpopup:2.0.0',
             //加载中动画
@@ -119,9 +141,14 @@ ext {
 
             //运行时权限
             "andPermission"                  : 'com.yanzhenjie.permission:support:2.0.1',
+
+            "pyg-update"                     : "com.pgyersdk:sdk:3.0.10",
+            "xiaomi-update"                  : "mi-appstore:xiaomi-update-sdk:4.0.3",
+            "update-plugin"                  : "com.github.yjfnypeu:UpdatePlugin:3.1.3",
+
             //bugly升级
-            "bugly_upgrade"                  : 'com.tencent.bugly:crashreport_upgrade:1.4.5',
-            "bugly_native"                   : 'com.tencent.bugly:nativecrashreport:3.6.0',
+            "bugly-upgrade"                  : 'com.tencent.bugly:crashreport_upgrade:1.4.5',
+            "bugly-native"                   : 'com.tencent.bugly:nativecrashreport:3.7.1',
 
             "greendao"                       : "org.greenrobot:greendao:3.2.2",
             "greendao_generator"             : "org.greenrobot:greendao-generator:3.2.2",

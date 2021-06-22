@@ -9,10 +9,10 @@ import androidx.core.app.ActivityCompat
 import com.hjq.toast.ToastUtils
 import com.zenchn.djilearndemo.R
 import com.zenchn.djilearndemo.base.BaseActivity
-import com.zenchn.djilearndemo.base.viewClickListener
-import com.zenchn.djilearndemo.base.viewEnabledExt
-import com.zenchn.djilearndemo.base.viewExt
-import com.zenchn.djilearndemo.model.event.AircraftConnectEvent
+import com.zenchn.djilearndemo.event.AircraftConnectEvent
+import com.zenchn.widget.viewClickListenerExt
+import com.zenchn.widget.viewEnabledExt
+import com.zenchn.widget.viewExt
 import dji.common.error.DJIError
 import dji.common.realname.AircraftBindingState.AircraftBindingStateListener
 import dji.common.realname.AppActivationState.AppActivationStateListener
@@ -57,13 +57,13 @@ class BindAircraftActivity : BaseActivity() {
     }
 
     private fun initData() {
-        viewClickListener(R.id.btn_login) {
+        viewClickListenerExt(R.id.btn_login) {
             loginAccount()
         }
-        viewClickListener(R.id.btn_logout) {
+        viewClickListenerExt(R.id.btn_logout) {
             logoutAccount()
         }
-        viewClickListener(R.id.btn_go_main) {
+        viewClickListenerExt(R.id.btn_go_main) {
             startActivity(Intent(this, MainActivity::class.java))
         }
     }

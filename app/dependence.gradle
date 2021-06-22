@@ -1,9 +1,10 @@
+//项目依赖配置
 dependencies {
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation rootProject.ext.dependencies["junit"]
+    testImplementation rootProject.ext.dependencies["test-junit"]
+    androidTestImplementation rootProject.ext.dependencies["test-runner"]
+    androidTestImplementation rootProject.ext.dependencies["test-espresso"]
 
     //如果aar包有很多，也可以一样象jar包统一添加一个文件夹下的所有包：
 //    def dir = new File('app/libs')
@@ -15,19 +16,20 @@ dependencies {
 //    }
 
     //------------module依赖----------------------------------
-    implementation rootProject.ext.dependencies["module_support"]
+    implementation project(path: ':module_common')
+    implementation project(path: ':module_widget')
+    implementation project(path: ':module_api')
+    implementation project(path: ':module_map')
+    implementation project(path: ':module_update')
 
     //==============================组件依赖 kotlin用kapt替换annotationProcessor===============================
-    implementation rootProject.ext.dependencies["androidx_core_ktx"]
-    implementation rootProject.ext.dependencies["androidx_constraint_layout"]
-    implementation rootProject.ext.dependencies["androidx_recyclerview"]
-    implementation rootProject.ext.dependencies["androidx_material_design"]
-    implementation rootProject.ext.dependencies["androidx_cardview"]
-    implementation rootProject.ext.dependencies["androidx_gridLayout"]
+    implementation rootProject.ext.dependencies["androidx_viewmodel_ktx"]
+    implementation(rootProject.ext.dependencies["androidx_lifecycle_extensions"]) {
+        exclude group: 'androidx.fragment'
+    }
+
     implementation rootProject.ext.dependencies["androidx_multidex"]
     implementation rootProject.ext.dependencies["androidx_lifecycle_runtime_ktx"]
-    implementation rootProject.ext.dependencies["coroutine_core"]
-    implementation rootProject.ext.dependencies["coroutine_android"]
 
     implementation(rootProject.ext.dependencies["dji_sdk"]) {
         /**
@@ -50,27 +52,11 @@ dependencies {
         //exclude module: 'fly-safe-database'
     }
     compileOnly rootProject.ext.dependencies["dji_sdk_provided"]
+}
 
-    implementation rootProject.ext.dependencies["eventbus"]
-
-    implementation rootProject.ext.dependencies["andPermission"]
-    implementation rootProject.ext.dependencies["immersionbar"]
-
-    implementation rootProject.ext.dependencies["brvah"]
-
-    //okhttp,retrofit
-    implementation rootProject.ext.dependencies["okhttp"]
-    implementation rootProject.ext.dependencies["okio"]
-    implementation rootProject.ext.dependencies["okhttp_interceptor"]
-    implementation rootProject.ext.dependencies["retrofit"]
-    implementation rootProject.ext.dependencies["retrofit_converter_scalars"]
-    implementation rootProject.ext.dependencies["retrofit_converter_gson"]
-    implementation rootProject.ext.dependencies["retrofit_rxjava2_adapter"]
-
-    implementation rootProject.ext.dependencies["amap_3dmap"]
-    implementation rootProject.ext.dependencies["amap_search"]
-    implementation rootProject.ext.dependencies["amap_location"]
-
-    //use leakcanary
-//    debugImplementation rootProject.ext.dependencies["leakcanary"]
+configurations.all {
+    resolutionStrategy {
+        force rootProject.ext.dependencies["androidx_fragment"]
+        force rootProject.ext.dependencies["androidx_collection"]
+    }
 }

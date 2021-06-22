@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+}
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode 1
+        versionName '1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+            //this way we can find the .aar file include_layout_event_fire_process_result libs folder
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    compileOnly project(path: ':module_common')
+    compileOnly project(path: ':module_widget')
+    api rootProject.ext.dependencies["amap_3dmap"]
+    api rootProject.ext.dependencies["amap_search"]
+    api rootProject.ext.dependencies["amap_location"]
+}
+
+configurations.all {
+    resolutionStrategy {
+        force rootProject.ext.dependencies["androidx_annotations"]
+    }
+}

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PictureBrowserFullscreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!--    <style name="DialogStyle" parent="@style/Theme.AppCompat.Dialog">-->
+    <style name="DialogStyle" parent="@style/Theme.MaterialComponents.Light.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 设置背景色 透明-->
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 设置是否显示背景 -->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="DialogStyle.BottomSheet">
+        <!-- 设置背景透明度 -->
+        <item name="android:backgroundDimAmount">0.75</item>
+        <!--背景是否模糊显示-->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="DialogStyle.Loading">
+        <!-- 设置背景透明度 -->
+        <item name="android:backgroundDimAmount">0.75</item>
+        <!--背景是否模糊显示-->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="LineStyle">
+        <item name="android:background">@color/color_DFDFDF</item>
+    </style>
+
+    <style name="LineStyle.Row">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:minHeight">1px</item>
+    </style>
+
+    <style name="BaseNoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <!--仿微信样式，注意每一项都不能少-->
+    <style name="picture.WeChat.style" parent="BaseNoActionBarTheme">
+        <!-- Customize your theme here. -->
+        <!--标题栏背景色-->
+        <item name="colorPrimary">#393A3E</item>
+        <!--状态栏背景色-->
+        <item name="colorPrimaryDark">#393A3E</item>
+        <!--是否改变图片列表界面状态栏字体颜色为黑色-->
+        <item name="picture.statusFontColor">false</item>
+        <!--返回键图标-->
+        <item name="picture.leftBack.icon">@drawable/picture_icon_close</item>
+        <!--标题下拉箭头-->
+        <item name="picture.arrow_down.icon">@drawable/picture_icon_wechat_down</item>
+        <!--标题上拉箭头-->
+        <item name="picture.arrow_up.icon">@drawable/picture_icon_wechat_up</item>
+        <!--标题文字颜色-->
+        <item name="picture.title.textColor">#FFFFFF</item>
+        <!--标题栏右边文字-->
+        <item name="picture.right.textColor">#FFFFFF</item>
+        <!--图片列表勾选样式-->
+        <item name="picture.checked.style">@drawable/picture_wechat_num_selector</item>
+        <!--开启图片列表勾选数字模式,开启的话勾选样式要换-->
+        <item name="picture.style.checkNumMode">true</item>
+        <!--选择图片样式0/9-->
+        <item name="picture.style.numComplete">false</item>
+        <!--图片列表底部背景色-->
+        <item name="picture.bottom.bg">#393A3E</item>
+        <!--图片列表预览文字颜色-->
+        <item name="picture.preview.textColor">#FFFFFF</item>
+        <!--图片列表已完成文字颜色-->
+        <item name="picture.complete.textColor">#FFFFFF</item>
+        <!--图片已选数量圆点背景色-->
+        <item name="picture.num.style">@drawable/shape_num_oval_blue</item>
+        <!--预览界面标题文字颜色-->
+        <item name="picture.ac_preview.title.textColor">#FFFFFF</item>
+        <!--预览界面已完成文字颜色-->
+        <item name="picture.ac_preview.complete.textColor">#FFFFFF</item>
+        <!--预览界面标题栏背景色-->
+        <item name="picture.ac_preview.title.bg">#393A3E</item>
+        <!--预览界面底部背景色-->
+        <item name="picture.ac_preview.bottom.bg">#393A3E</item>
+        <!--预览界面返回箭头-->
+        <item name="picture.preview.leftBack.icon">@drawable/picture_icon_back</item>
+        <!--裁剪页面标题背景色-->
+        <item name="picture.crop.toolbar.bg">#393A3E</item>
+        <!--裁剪页面状态栏颜色-->
+        <item name="picture.crop.status.color">#393A3E</item>
+        <!--裁剪页面标题文字颜色-->
+        <item name="picture.crop.title.color">#FFFFFF</item>
+        <!--相册文件夹列表选中图标-->
+        <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
+    </style>
+</resources>

@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zenchn.widget">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".PhotoBrowserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/PictureBrowserFullscreenTheme" />
+
+    </application>
+</manifest>

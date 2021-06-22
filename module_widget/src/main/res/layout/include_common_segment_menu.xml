@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/segment_menu"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/common_segment_height"
+    android:minWidth="@dimen/common_segment_width">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_left_button"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:minEms="6"
+        android:textSize="14sp"
+        tools:background="@drawable/shape_segment_button_left_normal"
+        tools:text="xxxxx"
+        tools:textColor="@color/color_Segment_Press" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_right_button"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:minEms="6"
+        android:textSize="14sp"
+        tools:background="@drawable/shape_segment_button_right_pressed"
+        tools:text="xxxxx"
+        tools:textColor="@color/color_Segment_Normal" />
+
+</LinearLayout>

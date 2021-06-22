@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/common_form_layout_height"
+    android:background="@android:color/white"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_form_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:ellipsize="marquee"
+        android:gravity="start|center_vertical"
+        android:maxWidth="120dp"
+        android:singleLine="true"
+        android:textColor="@color/color_text_28"
+        android:textSize="16sp"
+        tools:text="xxxxxxxxxxxxxxxxxxxx" />
+
+    <ViewStub
+        android:id="@+id/vs_form_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/common_form_layout_height"
+        android:layout="@layout/include_common_form_mark" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/v_form_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@null"
+        android:gravity="end|center_vertical"
+        android:minLines="1"
+        android:textColor="@color/color_text_99"
+        android:textSize="16sp"
+        tools:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+
+    <ViewStub
+        android:id="@+id/vs_form_next"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/common_form_layout_height"
+        android:layout_marginStart="12dp"
+        android:layout="@layout/include_common_next" />
+
+</LinearLayout>

@@ -2,6 +2,7 @@ package com.zenchn.djilearndemo.ui
 
 import android.app.AlertDialog
 import android.app.Application
+import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.LinearLayout
@@ -14,11 +15,14 @@ import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdate
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.model.*
-import com.jacky.support.orNotNullNotEmpty
+import com.zenchn.common.ext.orNotNullNotEmpty
 import com.zenchn.djilearndemo.R
 import com.zenchn.djilearndemo.app.ApplicationKit
 import com.zenchn.djilearndemo.base.*
-import com.zenchn.djilearndemo.model.event.AircraftConnectEvent
+import com.zenchn.djilearndemo.event.AircraftConnectEvent
+import com.zenchn.map.IAMapView
+import com.zenchn.map.initMapView
+import com.zenchn.widget.viewClickListenerExt
 import dji.common.error.DJIError
 import dji.common.mission.waypoint.*
 import dji.sdk.flightcontroller.FlightController
@@ -40,7 +44,7 @@ import kotlin.math.atan2
  * desc  ：航点任务页面
  * record：
  */
-class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickListener {
+class WaypointActivity : BaseVMActivity<WaypointViewModel>(), IAMapView, AMap.OnMapClickListener {
     private val TAG = "WayPoint"
     private var droneLocationLat = 30.318596
     private var droneLocationLng: Double = 120.060183
@@ -58,6 +62,7 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
     private val waypointMissionBuilder by lazy { WaypointMission.Builder() }
     private val waypointMissionOperator by lazy { DJISDKManager.getInstance().missionControl.waypointMissionOperator }
     private var mFinishedAction: WaypointMissionFinishedAction = WaypointMissionFinishedAction.NO_ACTION
+    private var mAMap: AMap? = null
 
     private val eventNotificationListener: WaypointMissionOperatorListener = object : WaypointMissionOperatorListener {
         override fun onDownloadUpdate(downloadEvent: WaypointMissionDownloadEvent) {}
@@ -71,14 +76,30 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
 
     override fun getLayoutId(): Int = R.layout.activity_waypoint
 
+    override val aMapViewHolder: IAMapView.ViewHolder = object : IAMapView.ViewHolder() {
+        override fun getViewId(): Int = R.id.map_view
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        aMapViewHolder.view?.onCreate(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
+        aMapViewHolder.view?.onSaveInstanceState(outState)
+    }
+
     override fun initWidget() {
         EventBus.getDefault().register(this)
         waypointMissionOperator.addListener(eventNotificationListener)
-        viewClickListener(R.id.ibt_back) { onBackPressed() }
-        viewClickListener(R.id.bt_config) {
+        initAMapView()
+        viewClickListenerExt(R.id.ibt_back) { onBackPressed() }
+        viewClickListenerExt(R.id.bt_config) {
             showSettingDialog()
         }
-        viewClickListener(R.id.bt_locate) {
+        viewClickListenerExt(R.id.bt_locate) {
             if (checkGpsCoordination(droneLocationLat, droneLocationLng)) {
                 updateDroneLocation()
                 cameraUpdate()
@@ -86,11 +107,11 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
                 showMessage("当前定位坐标无效：lat$droneLocationLat,lng$droneLocationLng")
             }
         }
-        viewClickListener(R.id.bt_add) {
+        viewClickListenerExt(R.id.bt_add) {
             mIsAddMode = mIsAddMode.not()
             (it as? Button)?.text = if (mIsAddMode) "Exit" else "Add"
         }
-        viewClickListener(R.id.bt_previous) {
+        viewClickListenerExt(R.id.bt_previous) {
             lifecycleScope.launch(Dispatchers.IO) {
                 //后退一步
                 mMarkers.pollLast()?.remove()
@@ -101,8 +122,8 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
                 mPolylines.pollLast()?.remove()
             }
         }
-        viewClickListener(R.id.bt_clear) {
-            mMapView?.map?.clear()
+        viewClickListenerExt(R.id.bt_clear) {
+            mAMap?.clear()
             mWaypointList.clear()
             mLastWaypoint = null
             mMarkers.clear()
@@ -110,20 +131,22 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
             waypointMissionBuilder.waypointList(mWaypointList)
             updateDroneLocation()
         }
-        viewClickListener(R.id.bt_upload) { uploadWayPointMission() }
-        viewClickListener(R.id.bt_start) { startWaypointMission() }
-        viewClickListener(R.id.bt_stop) { stopWaypointMission() }
+        viewClickListenerExt(R.id.bt_upload) { uploadWayPointMission() }
+        viewClickListenerExt(R.id.bt_start) { startWaypointMission() }
+        viewClickListenerExt(R.id.bt_stop) { stopWaypointMission() }
     }
 
-    override fun getAMapViewIdRes(): Int = R.id.map_view
-
-    override fun initAMapView() {
-        mMapView?.map?.apply {
-            setOnMapClickListener(this@WaypointActivity)
-            //杭州 120.060183,30.318596
-            val hangzhou = LatLng(30.308596, 120.060183)
-            addMarker(MarkerOptions().position(hangzhou).title("Marker in hangzhou"))
-            moveCamera(CameraUpdateFactory.newLatLng(hangzhou))
+    fun initAMapView() {
+        initMapView {
+            mAMap = this.map
+            //初始化地图控制器对象
+            this.map.apply {
+                setOnMapClickListener(this@WaypointActivity)
+                //杭州 120.060183,30.318596
+                val hangzhou = LatLng(30.308596, 120.060183)
+                addMarker(MarkerOptions().position(hangzhou).title("Marker in hangzhou"))
+                moveCamera(CameraUpdateFactory.newLatLng(hangzhou))
+            }
         }
     }
 
@@ -169,7 +192,7 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
             //Create MarkerOptions object
             val markerOptions = MarkerOptions().position(point)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_go_now))
-            mMapView?.map?.apply {
+            mAMap?.apply {
                 val marker: Marker = addMarker(markerOptions)
                 mMarkers.peekLast()?.apply {
                     changeMarkerIcon(this, BitmapDescriptorFactory.fromResource(R.drawable.ic_go))
@@ -198,7 +221,7 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
         marker.options.icon.bitmap.recycle()
         marker.setIcon(descriptor)
         //触发地图立即刷新
-        mMapView?.map?.runOnDrawFrame()
+        mAMap?.runOnDrawFrame()
     }
 
     // 计算两点间的角度
@@ -243,14 +266,14 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
             val markerOptions =
                 MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.aircraft))
             droneMarker?.remove()
-            droneMarker = mMapView?.map?.addMarker(markerOptions)
+            droneMarker = mAMap?.addMarker(markerOptions)
         }
     }
 
     private fun cameraUpdate() {
         val pos = LatLng(droneLocationLat, droneLocationLng)
         val cu: CameraUpdate = CameraUpdateFactory.newLatLngZoom(pos, 18F)
-        mMapView?.map?.moveCamera(cu)
+        mAMap?.moveCamera(cu)
     }
 
     private fun showSettingDialog() {
@@ -345,7 +368,7 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
         }
     }
 
-    override val startObserve: WaypointViewModel.() -> Unit = {
+    override val onViewModelStartup: WaypointViewModel.() -> Unit = {
 
     }
 
@@ -355,7 +378,6 @@ class WaypointActivity : BaseAMapActivity<WaypointViewModel>(), AMap.OnMapClickL
         EventBus.getDefault().unregister(this)
         waypointMissionOperator.removeListener(eventNotificationListener)
     }
-
 }
 
 class WaypointViewModel(application: Application) : BaseViewModel(application) {

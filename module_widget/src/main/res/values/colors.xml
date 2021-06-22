@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_Primary">#2975E6</color>
+    <color name="color_DialogBg">#66000000</color>
+    <color name="color_bg">#EDEEF0</color>
+    <color name="color_PickerViewTitle">@android:color/black</color>
+    <color name="color_PickerViewSubmit">@color/color_Primary</color>
+    <color name="color_PickerViewCancel">#282828</color>
+
+    <color name="color_TitleBar_Bg">@android:color/white</color>
+    <color name="color_text_28">#282828</color>
+    <color name="color_text_99">#999999</color>
+    <color name="color_red_56">#FB5656</color>
+
+    <color name="color_Blue">#2975E6</color>
+    <color name="color_BluePressed">#662975E6</color>
+    <color name="color_DFE0E2">#DFE0E2</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="color_BBBBBB">#BBBBBB</color>
+    <color name="color_DFDFDF">#DFDFDF</color>
+    <color name="color_EDEEF0">#EDEEF0</color>
+
+    <color name="color_DDDDDD">#DDDDDD</color>
+    <color name="color_Chart_Zero_Line">#DDDDDD</color>
+    <color name="color_Chart_Line_Default">#2975E6</color>
+    <color name="color_Chart_Line_Blue">#188BFF</color>
+    <color name="color_Chart_Line_Green">#2FC25B</color>
+    <color name="color_Chart_Line_Yellow">#FFDB5C</color>
+    <color name="color_Chart_Line_Red">#F54336</color>
+    <color name="color_Chart_Line_Purple">#AB82FF</color>
+    <color name="color_Chart_Line_Orange">#FBA603</color>
+    <color name="color_Chart_Line_Pink">#F184E2</color>
+    <color name="color_Chart_Line_Mint_Green">#096018</color>
+    <color name="color_Chart_Line_deep_red">#85081B</color>
+
+    <color name="color_Segment_Stroke">#2975E6</color>
+    <color name="color_Segment_Press">#2975E6</color>
+    <color name="color_Segment_Normal">#FFFFFF</color>
+</resources>

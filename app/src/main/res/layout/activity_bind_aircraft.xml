@@ -7,7 +7,6 @@
         android:id="@+id/binding_state_label"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
@@ -20,24 +19,13 @@
     <TextView
         android:id="@+id/tv_binding_state_info"
         android:layout_width="220dp"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/binding_state_label"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="Unknown"
         android:textColor="@color/black"
-        android:textSize="17sp" />
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="Application Activation Demo"
         android:textSize="17sp" />
 
     <TextView
@@ -55,7 +43,7 @@
     <TextView
         android:id="@+id/tv_activation_state_info"
         android:layout_width="220dp"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/activation_state_label"
         android:layout_alignEnd="@+id/tv_binding_state_info"
         android:text="Unknown"

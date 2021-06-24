@@ -121,7 +121,7 @@ ext {
             "cookie-manager"                 : "com.github.franmontiel:PersistentCookieJar:v1.0.1",
             //阿里出品,fastjson
             "fastjson"                       : 'com.alibaba:fastjson:1.2.44',
-            "gson"                           : "com.google.code.gson:gson:2.8.5",
+            "gson"                           : "com.google.code.gson:gson:2.8.7",
             //https cookie
             "cookieJar"                      : 'com.github.franmontiel:PersistentCookieJar:v1.0.1',
 

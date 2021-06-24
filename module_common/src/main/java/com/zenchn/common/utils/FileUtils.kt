@@ -167,7 +167,7 @@ fun File.rmdir(): Boolean =
  */
 fun File.sudorm(): Boolean = safelyRun {
     when {
-        isDirectory -> listFiles()?.forEach { _ -> sudorm() }
+        isDirectory -> listFiles()?.forEach { file -> file.delete() }
         isFile -> delete()
     }
     delete()

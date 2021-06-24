@@ -1,19 +1,20 @@
 package com.zenchn.djilearndemo.ui
 
 import android.app.AlertDialog
-import android.os.Environment
+import android.app.Application
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.zenchn.common.utils.DisplayUtils
-import com.zenchn.common.utils.LoggerKit
+import com.zenchn.common.utils.*
 import com.zenchn.djilearndemo.R
 import com.zenchn.djilearndemo.app.ApplicationKit
+import com.zenchn.djilearndemo.app.MyApplication
 import com.zenchn.djilearndemo.base.*
 import com.zenchn.djilearndemo.ui.adapter.FileListAdapter
 import com.zenchn.djilearndemo.widget.dialog.DownloadDialog
@@ -41,13 +42,13 @@ import java.util.*
  * desc  ：管理视频、图片媒体文件
  * record：
  */
-class MediaManageActivity : BaseActivity() {
+class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
     companion object {
         const val TAG = "MediaManageActivity"
     }
 
     private val mListAdapter: FileListAdapter by lazy { FileListAdapter() }
-    private var mediaFileList = mutableListOf<MediaFile>()
+    private var mMediaFileList = mutableListOf<MediaFile>()
     private var mMediaManager: MediaManager? = null
     private var currentFileListState = FileListState.UNKNOWN
     private var scheduler: FetchMediaTaskScheduler? = null
@@ -60,7 +61,6 @@ class MediaManageActivity : BaseActivity() {
             mMediaManager?.exitMediaDownloading()
         }.setWidth(DisplayUtils.dp2px(360))
     }
-    private val destDir: File = File(Environment.getExternalStorageDirectory().getPath().toString() + "/DJiMedia/")
     private var currentProgress = -1
 
     override fun getLayoutId(): Int = R.layout.activity_media_manage
@@ -118,8 +118,8 @@ class MediaManageActivity : BaseActivity() {
                 showMessage("飞机未连接")
                 return@viewClickListenerExt
             }
+            showProgress()
             lifecycleScope.launch(Dispatchers.IO) {
-                showProgress()
                 getFileList()
             }
         }
@@ -167,6 +167,14 @@ class MediaManageActivity : BaseActivity() {
                 visibility = if (visibility == View.VISIBLE) View.GONE else View.VISIBLE
             }
         }
+        viewClickListenerExt(R.id.bt_download_upload_photo) {
+            //下载并上传照片
+            if (mMediaFileList.isEmpty()) {
+                showMessage("暂无媒体文件")
+                return@viewClickListenerExt
+            }
+            viewModel.downloadAndUploadPhotos(mMediaFileList)
+        }
     }
 
     private fun checkSelectState(): Boolean {
@@ -211,7 +219,7 @@ class MediaManageActivity : BaseActivity() {
                         cameraInstance.setMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD) { error ->
                             if (error == null) {
                                 LoggerKit.d("Set camera download Mode success")
-                                showProgress()
+                                runOnUiThread { showProgress() }
                                 getFileList()
                             } else {
                                 showMessage("Set cameraMode failed")
@@ -227,6 +235,7 @@ class MediaManageActivity : BaseActivity() {
         return
     }
 
+    //获取媒体文件
     private fun getFileList() {
         mMediaManager?.apply {
             if (currentFileListState == FileListState.SYNCING || currentFileListState == FileListState.DELETING) {
@@ -236,20 +245,20 @@ class MediaManageActivity : BaseActivity() {
                     override fun onResult(djiError: DJIError?) {
                         if (null == djiError) {
                             LoggerKit.d("load data suc")
-                            hideProgress()
+                            runOnUiThread { hideProgress() }
                             //Reset data
                             if (currentFileListState != FileListState.INCOMPLETE) {
-                                mediaFileList.clear()
+                                mMediaFileList.clear()
                                 lastClickViewIndex = -1
                                 lastClickView = null
                             }
                             if (mMediaType == SettingsDefinitions.StorageLocation.SDCARD) {
-                                mediaFileList = mMediaManager?.sdCardFileListSnapshot as MutableList<MediaFile>
+                                mMediaFileList = mMediaManager?.sdCardFileListSnapshot as MutableList<MediaFile>
                             } else if (mMediaType == SettingsDefinitions.StorageLocation.INTERNAL_STORAGE) {
-                                mediaFileList =
+                                mMediaFileList =
                                     mMediaManager?.internalStorageFileListSnapshot as MutableList<MediaFile>
                             }
-                            Collections.sort(mediaFileList, object : Comparator<MediaFile> {
+                            Collections.sort(mMediaFileList, object : Comparator<MediaFile> {
                                 override fun compare(lhs: MediaFile, rhs: MediaFile): Int {
                                     if (lhs.timeCreated < rhs.timeCreated) {
                                         return 1
@@ -265,7 +274,7 @@ class MediaManageActivity : BaseActivity() {
                                 }
                             }
                         } else {
-                            hideProgress()
+                            runOnUiThread { hideProgress() }
                             LoggerKit.e("Get Media File List Failed:" + djiError.description)
                             showMessage("Get Media File List Failed:" + djiError.description)
                         }
@@ -277,16 +286,16 @@ class MediaManageActivity : BaseActivity() {
 
 
     private fun getThumbnailByIndex(index: Int) {
-        val task = FetchMediaTask(mediaFileList[index], FetchMediaTaskContent.THUMBNAIL, taskCallback)
+        val task = FetchMediaTask(mMediaFileList[index], FetchMediaTaskContent.THUMBNAIL, taskCallback)
         scheduler?.moveTaskToEnd(task)
     }
 
     private fun getThumbnails() {
-        if (mediaFileList.size <= 0) {
+        if (mMediaFileList.size <= 0) {
             showMessage("No File info for downloading thumbnails")
             return
         }
-        for (i in mediaFileList.indices) {
+        for (i in mMediaFileList.indices) {
             getThumbnailByIndex(i)
         }
     }
@@ -295,13 +304,13 @@ class MediaManageActivity : BaseActivity() {
         if (null == error) {
             if (option == FetchMediaTaskContent.PREVIEW) {
                 runOnUiThread {
-                    mListAdapter.setNewInstance(mediaFileList)
+                    mListAdapter.setNewInstance(mMediaFileList)
                     mListAdapter.notifyDataSetChanged()
                 }
             }
             if (option == FetchMediaTaskContent.THUMBNAIL) {
                 runOnUiThread {
-                    mListAdapter.setNewInstance(mediaFileList)
+                    mListAdapter.setNewInstance(mMediaFileList)
                     mListAdapter.notifyDataSetChanged()
                 }
             }
@@ -338,12 +347,13 @@ class MediaManageActivity : BaseActivity() {
 
     //根据索引下载对应文件
     private fun downloadFileByIndex(index: Int) {
-        if (mediaFileList[index].mediaType == MediaFile.MediaType.PANORAMA
-            || mediaFileList[index].mediaType == MediaFile.MediaType.SHALLOW_FOCUS
+        if (mMediaFileList[index].mediaType == MediaFile.MediaType.PANORAMA
+            || mMediaFileList[index].mediaType == MediaFile.MediaType.SHALLOW_FOCUS
         ) {
             return
         }
-        mediaFileList[index].fetchFileData(destDir, null, object : DownloadListener<String> {
+        val destDownloadDir = File(getExternalFilesDir(null)?.path.toString() + "/DJiMedia/")
+        mMediaFileList[index].fetchFileData(destDownloadDir, null, object : DownloadListener<String> {
             override fun onFailure(error: DJIError) {
                 mDownloadDialog.dismiss()
                 showMessage("Download File Failed" + error.description)
@@ -352,12 +362,12 @@ class MediaManageActivity : BaseActivity() {
 
             override fun onProgress(total: Long, current: Long) {}
             override fun onRateUpdate(total: Long, current: Long, persize: Long) {
-                val tmpProgress = (1.0 * current / total * 100).toInt()
+                val tmpProgress = (current * 1F / total * 100).toInt()
                 if (tmpProgress != currentProgress) {
                     runOnUiThread {
                         (mDownloadDialog as? DownloadDialog)?.updateProgress(tmpProgress)
-                        currentProgress = tmpProgress
                     }
+                    currentProgress = tmpProgress
                 }
             }
 
@@ -380,8 +390,8 @@ class MediaManageActivity : BaseActivity() {
     //根据索引删除指定文件
     private fun deleteFileByIndex(index: Int) {
         val fileToDelete = ArrayList<MediaFile>()
-        if (mediaFileList.size > index) {
-            fileToDelete.add(mediaFileList[index])
+        if (mMediaFileList.size > index) {
+            fileToDelete.add(mMediaFileList[index])
             mMediaManager?.deleteFiles(
                 fileToDelete,
                 object : CompletionCallbackWithTwoParam<List<MediaFile?>?, DJICameraError?> {
@@ -407,7 +417,7 @@ class MediaManageActivity : BaseActivity() {
 
     //播放回放
     private fun playVideo() {
-        val selectedMediaFile = mediaFileList[lastClickViewIndex]
+        val selectedMediaFile = mMediaFileList[lastClickViewIndex]
         if (selectedMediaFile.mediaType == MediaFile.MediaType.MOV || selectedMediaFile.mediaType == MediaFile.MediaType.MP4) {
             viewInVisibleExt(R.id.iv_preview, false)
             mMediaManager?.playVideoMediaFile(selectedMediaFile) { error ->
@@ -473,7 +483,9 @@ class MediaManageActivity : BaseActivity() {
             addLineToSB(pushInfo, "media cached percentage", videoPlaybackState.cachedPercentage)
             addLineToSB(pushInfo, "media cached position", videoPlaybackState.cachedPosition)
             pushInfo.append("\n")
-            setResultToText(pushInfo.toString())
+            runOnUiThread {
+                findViewWithId<TextView>(R.id.pointing_push_tv)?.text = pushInfo.toString()
+            }
         }
     }
 
@@ -481,12 +493,6 @@ class MediaManageActivity : BaseActivity() {
         if (sb == null) return
         sb.append(if (name == null || "" == name) "" else "$name: ")
             .append(if (value == null) "" else value.toString() + "").append("\n")
-    }
-
-    private fun setResultToText(string: String) {
-        runOnUiThread {
-            findViewWithId<TextView>(R.id.pointing_push_tv)?.text = string
-        }
     }
 
     override fun onDestroy() {
@@ -501,7 +507,88 @@ class MediaManageActivity : BaseActivity() {
             scheduler?.removeAllTasks()
         }
         ApplicationKit.getCameraInstance()?.setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO) {}
-        mediaFileList.clear()
+        mMediaFileList.clear()
         super.onDestroy()
+    }
+
+    override val onViewModelStartup: MediaManageViewModel.() -> Unit = {
+
+    }
+}
+
+class MediaManageViewModel(application: Application) : BaseViewModel(application) {
+    private val tag = "MediaManageViewModel"
+
+    /**
+     * 下载并上传图片文件
+     */
+    fun downloadAndUploadPhotos(mediaFileList: List<MediaFile>) {
+        launchOnUI {
+            loadingChannel.value = true
+            withContext(Dispatchers.IO) {
+                val destDownloadDir =
+                    File(getApplication<MyApplication>().getExternalFilesDir(null)?.path.toString() + "/uploadTmp/")
+                mediaFileList.filter { mediaFile ->
+                    mediaFile.mediaType == MediaFile.MediaType.JPEG
+                            || mediaFile.mediaType == MediaFile.MediaType.RAW_DNG
+                            || mediaFile.mediaType == MediaFile.MediaType.PANORAMA
+                            || mediaFile.mediaType == MediaFile.MediaType.SHALLOW_FOCUS
+                            || mediaFile.mediaType == MediaFile.MediaType.TIFF
+                }.let { list ->
+                    var downloadCount = 0
+                    for (mediaFile in list) {
+                        mediaFile.fetchFileData(destDownloadDir, null, object : DownloadListener<String> {
+                            override fun onFailure(error: DJIError) {
+                                Log.e(tag, "Download File Failed" + error.description)
+                            }
+
+                            override fun onProgress(total: Long, current: Long) {}
+                            override fun onRateUpdate(total: Long, current: Long, persize: Long) {
+                                val tmpProgress = (1F * current / total * 100).toInt()
+                                Log.d(tag, "tmpProgress:$tmpProgress")
+                            }
+
+                            override fun onStart() {
+                                Log.d(tag, "start download")
+                            }
+
+                            override fun onSuccess(filePath: String) {
+                                downloadCount++
+                                LoggerKit.d("$tag Download File Success:$filePath,,,count:$downloadCount")
+                                if (downloadCount == list.size) {
+                                    viewModelScope.launch(Dispatchers.Main) {
+                                        loadingChannel.value = false
+                                    }
+                                    //TODO 全部图片下载完成，开始上传接口
+                                    LoggerKit.d("开始上传图片到接口：$filePath")
+                                    //读取文件下载路劲下的所有图片，生成文件上传信息
+                                    readPhotos(filePath)
+                                }
+                            }
+
+                            override fun onRealtimeDataUpdate(p0: ByteArray?, p1: Long, p2: Boolean) {
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+    private fun readPhotos(desDir: String) {
+        if (FileUtils.isFolderExist(desDir)) {
+            File(desDir).listFiles()?.apply {
+                for (file in this) {
+                    val imageExifDate = ImageUtils.getImageExifDate(desDir + File.separator + file.name)
+                    LoggerKit.d(
+                        "file:$file,,date:${
+                            DateUtils.parseTimeStringToLong(imageExifDate, DateFormatTemplate.ymdhmsColon)
+                        }"
+                    )
+                }
+            }
+            //上传完成后，删除已下载的图片
+            FileUtils.sudorm(desDir)
+        }
     }
 }

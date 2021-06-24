@@ -42,12 +42,12 @@
         android:textSize="11sp" />
 
     <Button
-        android:id="@+id/btn_status"
+        android:id="@+id/bt_download_upload_photo"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/download_btn"
-        android:text="play status"
+        android:text="upload photo"
         android:textSize="11sp" />
 
     <Button
@@ -92,6 +92,15 @@
         android:layout_alignBottom="@+id/play_btn"
         android:layout_toEndOf="@+id/stop_btn"
         android:text="MoveTo"
+        android:textSize="11sp" />
+
+    <Button
+        android:id="@+id/btn_status"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/moveTo_btn"
+        android:layout_toEndOf="@+id/moveTo_btn"
+        android:text="play status"
         android:textSize="11sp" />
 
     <!-- Widget to see first person view (FPV)-->

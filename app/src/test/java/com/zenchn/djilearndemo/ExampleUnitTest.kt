@@ -22,6 +22,26 @@ class ExampleUnitTest {
     fun test() {
         val hello = hello()
         hello.invoke()
+
+        Parent("xujiafeng")
+        Child("xujiafeng")
+    }
+
+
+}
+
+open class Parent(open var name: String) {
+    var nameLength: Int
+
+    init {
+        nameLength = name.length
+    }
+}
+
+class Child(override var name: String) : Parent(name) {
+
+    init {
+        nameLength = name.length
     }
 }
 

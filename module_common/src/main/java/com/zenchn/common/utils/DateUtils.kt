@@ -3,6 +3,8 @@ package com.zenchn.common.utils
 import androidx.annotation.IntRange
 import com.zenchn.common.SIMPLE_DATE_FORMAT_TEMPLATE
 import com.zenchn.common.ext.safelyRun
+import com.zenchn.common.utils.DateFormatTemplate.ymdhms
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -68,6 +70,23 @@ object DateUtils {
             else kotlin.math.floor(it)
         }.toLong()
     }
+
+    /**
+     * 把string类型的时间转成long类型
+     *
+     * @param timeString
+     * @return
+     */
+    fun parseTimeStringToLong(timeString: String, pattern: String = ymdhms, def: Long = 0L): Long {
+        try {
+            val sdf = SimpleDateFormat(pattern, Locale.CHINA)
+            val date = sdf.parse(timeString)
+            return date?.time ?: def
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return def
+    }
 }
 
 object DateFormatTemplate {
@@ -83,6 +102,7 @@ object DateFormatTemplate {
     const val hm = "HH:mm"
     const val mdhm = "MM月dd日 HH:mm"
     const val mdhmLink = "MM-dd HH:mm"
+    const val ymdhmsColon = "yyyy:MM:dd HH:mm:ss"
 }
 
 internal val sdf: SimpleDateFormat by lazy {
@@ -90,7 +110,7 @@ internal val sdf: SimpleDateFormat by lazy {
 }
 
 fun Date?.dateFormat(pattern: String = SIMPLE_DATE_FORMAT_TEMPLATE, def: String? = null): String? =
-        this?.let { DateUtils.dateFormat(it, pattern) } ?: def
+    this?.let { DateUtils.dateFormat(it, pattern) } ?: def
 
 fun Date.toCalendar(): Calendar = Calendar.getInstance().apply {
     time = this@toCalendar

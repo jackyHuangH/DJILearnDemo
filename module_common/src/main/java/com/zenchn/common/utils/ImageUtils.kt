@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
 import android.util.Log
+import java.io.IOException
 
 /**
  * 作   者：wangr on 2019/11/11 13:20
@@ -155,6 +156,19 @@ object ImageUtils {
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
             else -> 0
         }
+    }
+
+    /**
+     * 获取图片日期
+     */
+    fun getImageExifDate(fileName: String): String {
+        try {
+            val exif = ExifInterface(fileName)
+            return exif.getAttribute(ExifInterface.TAG_DATETIME).orEmpty()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return ""
     }
 
 }

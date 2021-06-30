@@ -1,5 +1,6 @@
 package com.zenchn.widget
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import androidx.annotation.StringRes
@@ -19,7 +20,7 @@ import java.lang.ref.WeakReference
 
 interface IUiDelegate {
 
-    fun showMessage(@NotNull msg: String? = null,@StringRes msgResId: Int? = null)
+    fun showMessage(@NotNull msg: String? = null, @StringRes msgResId: Int? = null)
 
     fun showProgress(cancelable: Boolean = false)
 
@@ -32,7 +33,7 @@ interface IUiDelegate {
 class DefaultUiDelegate(context: Context) : IUiDelegate {
 
     private val contextRef: WeakReference<Context> = WeakReference(context)
-    private val loadingDialog: Dialog = LoadingDialog(context)
+    private var loadingDialog: Dialog? = null//全局只允许一个dialog实例
 
     init {
         if (context is LifecycleOwner) {
@@ -40,13 +41,26 @@ class DefaultUiDelegate(context: Context) : IUiDelegate {
         }
     }
 
-    override fun showProgress(cancelable: Boolean) = with(loadingDialog) {
-        setCancelable(cancelable)
-        setCanceledOnTouchOutside(cancelable)
-        show()
+    override fun showProgress(cancelable: Boolean) {
+        if (loadingDialog == null && contextRef.get() != null) {
+            contextRef.get()?.let { ctx ->
+                loadingDialog = LoadingDialog(ctx)
+            }
+        }
+        loadingDialog?.apply {
+            setCancelable(cancelable)
+            setCanceledOnTouchOutside(cancelable)
+            if (!isShowing) {
+                show()
+            }
+        }
     }
 
-    override fun hideProgress() = loadingDialog.dismiss()
+    override fun hideProgress() {
+        if (loadingDialog?.isShowing==true) {
+            loadingDialog?.dismiss()
+        }
+    }
 
     override fun showMessage(msg: String?, msgResId: Int?) {
         contextRef.get()?.apply {
@@ -55,13 +69,17 @@ class DefaultUiDelegate(context: Context) : IUiDelegate {
             } else {
                 msg
             }?.let { msg ->
-                ToastUtils.show(msg.toString())
+                (this as? Activity)?.let {
+                    runOnUiThread {
+                        ToastUtils.show(msg.toString())
+                    }
+                }
             }
         }
     }
 
     override fun detachedFromView() {
-        if (loadingDialog.isShowing) loadingDialog.dismiss()
+        hideProgress()
         contextRef.clear()
     }
 }

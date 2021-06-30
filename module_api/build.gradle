@@ -43,7 +43,8 @@ dependencies {
 
     api rootProject.ext.dependencies["okhttp"]
     api rootProject.ext.dependencies["retrofit"]
-//    implementation rootProject.ext.dependencies["cookie-manager"]
+    api rootProject.ext.dependencies["luban"]
+    implementation rootProject.ext.dependencies["ali_OSS"]
     implementation rootProject.ext.dependencies["okhttp-logging"]
     implementation rootProject.ext.dependencies["converter-scalars"]
     implementation rootProject.ext.dependencies["converter-gson"]

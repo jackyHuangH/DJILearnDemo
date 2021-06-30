@@ -129,8 +129,9 @@ object RequestBodyBuilder {
      *
      * @return
      */
-    fun build(jsonStr: String?): RequestBody? {
+    fun build(jsonStr: String?): RequestBody {
         return jsonStr?.toRequestBody(MEDIA_TYPE_JSON)
+            ?: throw IllegalStateException("Create requestBody failed:jsonString is null or empty!")
     }
 
     /**
@@ -138,14 +139,14 @@ object RequestBodyBuilder {
      *
      * @return
      */
-    fun build(file: File?, mediaType: MediaType = MEDIA_TYPE_FILE): RequestBody? {
+    fun build(file: File?, mediaType: MediaType = MEDIA_TYPE_FILE): RequestBody {
         return file?.let {
-            return if (it.exists() && it.isFile) {
+            if (it.exists() && it.isFile) {
                 it.asRequestBody(mediaType)
             } else {
-                null
+                throw IllegalStateException("Create requestBody failed:file is not file or not exit!")
             }
-        }
+        } ?: throw IllegalStateException("Create requestBody failed:file is null!")
     }
 
 }

@@ -184,12 +184,12 @@
             android:text="waypoint" />
 
         <Button
-            android:id="@+id/btn_sensor_info"
+            android:id="@+id/btn_set_freq"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_start_rtmp"
             android:layout_toEndOf="@+id/btn_waypoint"
-            android:text="sensor base info" />
+            android:text="设置上报频率" />
 
     </RelativeLayout>
 

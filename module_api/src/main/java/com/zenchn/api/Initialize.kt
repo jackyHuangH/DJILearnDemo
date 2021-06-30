@@ -1,16 +1,12 @@
 package com.zenchn.api
 
-import android.app.Application
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import androidx.startup.Initializer
-import com.hjq.toast.ToastUtils
 import com.zenchn.api.frame.*
-import com.zenchn.common.SupportConfig
 import com.zenchn.common.ext.checkNotNull
 import com.zenchn.common.ext.isTrue
-import com.zenchn.common.utils.LoggerKit
 import com.zenchn.common.utils.getMetaData
 import com.zenchn.common.utils.isNetworkAvailable
 import okhttp3.logging.HttpLoggingInterceptor
@@ -50,6 +46,10 @@ object ApiManager {
 
     internal fun init(@NotNull context: Context) {
         this.contextRef = WeakReference(context.applicationContext)
+    }
+
+    fun getApplicationContext(): Context? {
+        return contextRef.get()
     }
 
     /**

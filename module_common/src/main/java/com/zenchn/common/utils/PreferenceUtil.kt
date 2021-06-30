@@ -23,10 +23,7 @@ class PreferenceUtil<T>(val keyName: String, private val defaultValue: T) {
         const val WHETHER_NEW_USER = "WHETHER_NEW_USER"//第一次安装启动App
         const val REMEMBER_PASSWORD = "REMEMBER_PASSWORD"//记住密码
         const val AUTO_LOGIN = "AUTO_LOGIN"//自动登录
-        const val WARN_VOICE_NOTIFY = "WARN_VOICE_NOTIFY"//语音播报，是否开启
-        const val JG_REGISTRATION_ID = "JG_REGISTRATION_ID"//极光推送registrationId设备唯一标识
-
-        const val MONITOR_OBJECT_ID = "MONITOR_OBJECT_ID"//监测对象id
+        const val AIRCRAFT_UPLOAD_FREQ = "AIRCRAFT_UPLOAD_FREQ"//无人机信息上报频率
 
         private val mPreference by lazy {
             ModuleManager.getContext().getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)

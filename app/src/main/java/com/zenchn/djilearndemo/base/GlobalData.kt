@@ -1,6 +1,7 @@
 package com.zenchn.djilearndemo.base
 
 import androidx.lifecycle.MutableLiveData
+import com.zenchn.api.entity.LiveFlowInfo
 
 /**
  * @author:Hzj
@@ -11,6 +12,6 @@ import androidx.lifecycle.MutableLiveData
 
 //--------------------全局共享的数据------------------------------
 /**
- * 是否展示设备marker,默认显示
+ * 直播推流url
  */
-val BaseViewModel.showDeviceMarker: MutableLiveData<Boolean> by lazy { MutableLiveData(true) }
+val BaseViewModel.shareLiveFlowInfo: MutableLiveData<LiveFlowInfo> by lazy { MutableLiveData() }

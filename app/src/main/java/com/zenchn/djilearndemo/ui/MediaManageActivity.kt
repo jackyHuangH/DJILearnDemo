@@ -1,16 +1,21 @@
 package com.zenchn.djilearndemo.ui
 
-import android.app.AlertDialog
 import android.app.Application
+import android.text.InputType
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import com.bumptech.glide.Glide
+import com.zenchn.api.entity.AircraftPhotoUploadEntity
+import com.zenchn.api.service.liveUploadService
+import com.zenchn.api.service.submitLivePhoto
 import com.zenchn.common.utils.*
 import com.zenchn.djilearndemo.R
 import com.zenchn.djilearndemo.app.ApplicationKit
@@ -18,10 +23,7 @@ import com.zenchn.djilearndemo.app.MyApplication
 import com.zenchn.djilearndemo.base.*
 import com.zenchn.djilearndemo.ui.adapter.FileListAdapter
 import com.zenchn.djilearndemo.widget.dialog.DownloadDialog
-import com.zenchn.widget.viewClickListenerExt
-import com.zenchn.widget.viewExt
-import com.zenchn.widget.viewInVisibleExt
-import com.zenchn.widget.viewVisibleExt
+import com.zenchn.widget.*
 import dji.common.camera.SettingsDefinitions
 import dji.common.error.DJICameraError
 import dji.common.error.DJIError
@@ -32,6 +34,7 @@ import dji.sdk.media.*
 import dji.sdk.media.FetchMediaTask
 import dji.sdk.media.MediaManager.*
 import kotlinx.coroutines.*
+import top.zibin.luban.Luban
 import java.io.File
 import java.util.*
 
@@ -45,6 +48,7 @@ import java.util.*
 class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
     companion object {
         const val TAG = "MediaManageActivity"
+        const val EXTRA_UPLOAD_FLAG = "EXTRA_UPLOAD_FLAG"
     }
 
     private val mListAdapter: FileListAdapter by lazy { FileListAdapter() }
@@ -55,6 +59,7 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
     private var lastClickViewIndex = -1
     private var lastClickView: View? = null
     private var mMediaType: SettingsDefinitions.StorageLocation? = null
+    private val mUploadFileFlag by lazy { intent?.getBooleanExtra(EXTRA_UPLOAD_FLAG, false) }
 
     private val mDownloadDialog by lazy {
         DownloadDialog {
@@ -193,7 +198,6 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
             mListAdapter.data.clear()
             mListAdapter.notifyDataSetChanged()
             Log.d(TAG, "Product disconnected")
-            return
         } else {
             ApplicationKit.getCameraInstance()?.let { cameraInstance ->
                 if (cameraInstance.isMediaDownloadModeSupported) {
@@ -232,7 +236,6 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
                 }
             }
         }
-        return
     }
 
     //获取媒体文件
@@ -268,6 +271,11 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
                                     return 0
                                 }
                             })
+                            //下载并上传照片
+                            if (mUploadFileFlag == true && mMediaFileList.isNotEmpty()) {
+                                showMessage("开始上传照片，请稍候！")
+                                viewModel.downloadAndUploadPhotos(mMediaFileList)
+                            }
                             scheduler?.resume { error ->
                                 if (error == null) {
                                     getThumbnails()
@@ -302,13 +310,7 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
 
     private val taskCallback = FetchMediaTask.Callback { file, option, error ->
         if (null == error) {
-            if (option == FetchMediaTaskContent.PREVIEW) {
-                runOnUiThread {
-                    mListAdapter.setNewInstance(mMediaFileList)
-                    mListAdapter.notifyDataSetChanged()
-                }
-            }
-            if (option == FetchMediaTaskContent.THUMBNAIL) {
+            if (option == FetchMediaTaskContent.PREVIEW || option == FetchMediaTaskContent.THUMBNAIL) {
                 runOnUiThread {
                     mListAdapter.setNewInstance(mMediaFileList)
                     mListAdapter.notifyDataSetChanged()
@@ -378,7 +380,7 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
 
             override fun onSuccess(filePath: String) {
                 mDownloadDialog.dismiss()
-                showMessage("Download File Success:$filePath")
+                Log.d(TAG, "Download File Success:$filePath")
                 currentProgress = -1
             }
 
@@ -409,7 +411,7 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
                     }
 
                     override fun onFailure(error: DJIError) {
-                        showMessage("Delete file failed")
+                        Log.d(TAG, "Delete file failed")
                     }
                 })
         }
@@ -433,25 +435,20 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
     }
 
     private fun moveToPosition() {
-        val li: LayoutInflater = LayoutInflater.from(this)
-        val promptsView: View = li.inflate(R.layout.prompt_input_position, null)
-        val alertDialogBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
-        alertDialogBuilder.setView(promptsView)
-        val userInput: EditText = promptsView.findViewById<View>(R.id.editTextDialogUserInput) as EditText
-        alertDialogBuilder.setCancelable(false).setPositiveButton(
-            "OK"
-        ) { dialog, id ->
-            val ms: String = userInput.getText().toString()
-            mMediaManager?.moveToPosition(ms.toFloat()) { error ->
-                if (null != error) {
-                    showMessage("Move to video position failed" + error.description)
-                } else {
-                    Log.d(MediaManageActivity.TAG, "Move to video position successfully.")
+        MaterialDialog(this).show {
+            input(inputType = InputType.TYPE_CLASS_NUMBER, hint = "input position") { dialog, text ->
+                val ms: String = text.toString()
+                mMediaManager?.moveToPosition(ms.toFloat()) { error ->
+                    if (null != error) {
+                        showMessage("Move to video position failed" + error.description)
+                    } else {
+                        Log.d(TAG, "Move to video position successfully.")
+                    }
                 }
             }
-        }.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-        val alertDialog: AlertDialog = alertDialogBuilder.create()
-        alertDialog.show()
+            positiveButton(text = "OK")
+            lifecycleOwner(this@MediaManageActivity)
+        }
     }
 
     private val updatedVideoPlaybackStateListener =
@@ -512,19 +509,25 @@ class MediaManageActivity : BaseVMActivity<MediaManageViewModel>() {
     }
 
     override val onViewModelStartup: MediaManageViewModel.() -> Unit = {
-
+        mUploadPhotoResult.observe(this@MediaManageActivity) { success ->
+            if (success) {
+                showMessage("照片上传成功！")
+                onBackPressed()
+            }
+        }
     }
 }
 
 class MediaManageViewModel(application: Application) : BaseViewModel(application) {
     private val tag = "MediaManageViewModel"
+    val mUploadPhotoResult: MutableLiveData<Boolean> = MutableLiveData()
 
     /**
      * 下载并上传图片文件
      */
     fun downloadAndUploadPhotos(mediaFileList: List<MediaFile>) {
+        loadingChannel.postValue(true)
         launchOnUI {
-            loadingChannel.value = true
             withContext(Dispatchers.IO) {
                 val destDownloadDir =
                     File(getApplication<MyApplication>().getExternalFilesDir(null)?.path.toString() + "/uploadTmp/")
@@ -556,18 +559,13 @@ class MediaManageViewModel(application: Application) : BaseViewModel(application
                                 downloadCount++
                                 LoggerKit.d("$tag Download File Success:$filePath,,,count:$downloadCount")
                                 if (downloadCount == list.size) {
-                                    viewModelScope.launch(Dispatchers.Main) {
-                                        loadingChannel.value = false
-                                    }
-                                    //TODO 全部图片下载完成，开始上传接口
                                     LoggerKit.d("开始上传图片到接口：$filePath")
                                     //读取文件下载路劲下的所有图片，生成文件上传信息
                                     readPhotos(filePath)
                                 }
                             }
 
-                            override fun onRealtimeDataUpdate(p0: ByteArray?, p1: Long, p2: Boolean) {
-                            }
+                            override fun onRealtimeDataUpdate(p0: ByteArray?, p1: Long, p2: Boolean) {}
                         })
                     }
                 }
@@ -577,18 +575,28 @@ class MediaManageViewModel(application: Application) : BaseViewModel(application
 
     private fun readPhotos(desDir: String) {
         if (FileUtils.isFolderExist(desDir)) {
-            File(desDir).listFiles()?.apply {
-                for (file in this) {
-                    val imageExifDate = ImageUtils.getImageExifDate(desDir + File.separator + file.name)
-                    LoggerKit.d(
-                        "file:$file,,date:${
-                            DateUtils.parseTimeStringToLong(imageExifDate, DateFormatTemplate.ymdhmsColon)
-                        }"
-                    )
-                }
+            val pushFlowId = shareLiveFlowInfo.value?.pushFlowId.orEmpty()
+            val photoEntityList = File(desDir).listFiles()?.map { file ->
+                val imageExifDate = ImageUtils.getImageExifDate(desDir + File.separator + file.name)
+                val timeLong =
+                    DateUtils.parseTimeStringToLong(imageExifDate, DateFormatTemplate.ymdhmsColon)
+                //先获取原图时间信息，再压缩图片覆盖原图
+                val compressedFile = Luban.with(getApplication()).setTargetDir(desDir)
+                    .setRenameListener { file.name }.load(file).get()[0]
+                AircraftPhotoUploadEntity(timeLong, compressedFile)
             }
-            //上传完成后，删除已下载的图片
-            FileUtils.sudorm(desDir)
+            LoggerKit.d("photoEntityList:$photoEntityList")
+            httpRequest(request = { liveUploadService.submitLivePhoto(photoEntityList, pushFlowId) },
+                callback = { ok, _, _ ->
+                    if (ok) {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            //上传完成后，删除已下载的图片
+                            FileUtils.sudoRmFileOrDir(desDir)
+                        }
+                    }
+                    loadingChannel.postValue(false)
+                    mUploadPhotoResult.postValue(true)
+                })
         }
     }
 }

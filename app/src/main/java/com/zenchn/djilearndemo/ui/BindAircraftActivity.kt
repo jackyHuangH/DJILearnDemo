@@ -1,6 +1,7 @@
 package com.zenchn.djilearndemo.ui
 
 import android.Manifest
+import android.app.Application
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -8,7 +9,8 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.hjq.toast.ToastUtils
 import com.zenchn.djilearndemo.R
-import com.zenchn.djilearndemo.base.BaseActivity
+import com.zenchn.djilearndemo.base.BaseVMActivity
+import com.zenchn.djilearndemo.base.BaseViewModel
 import com.zenchn.djilearndemo.event.AircraftConnectEvent
 import com.zenchn.widget.viewClickListenerExt
 import com.zenchn.widget.viewEnabledExt
@@ -32,7 +34,7 @@ import org.greenrobot.eventbus.ThreadMode
  * desc  ：无人机账户绑定
  * record：
  */
-class BindAircraftActivity : BaseActivity() {
+class BindAircraftActivity : BaseVMActivity<BindAircraftViewModel>() {
 
     private var appActivationManager: AppActivationManager? = null
     private val activationStateListener: AppActivationStateListener = AppActivationStateListener { appActivationState ->
@@ -153,4 +155,12 @@ class BindAircraftActivity : BaseActivity() {
         tearDownListener()
         EventBus.getDefault().unregister(this)
     }
+
+    override val onViewModelStartup: BindAircraftViewModel.() -> Unit = {
+
+    }
+}
+
+class BindAircraftViewModel(application: Application) : BaseViewModel(application) {
+
 }

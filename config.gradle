@@ -63,8 +63,8 @@ ext {
             "coroutine_android"              : 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1',
 
             //DJI---
-            "dji_sdk"                        : 'com.dji:dji-sdk:4.14.1',
-            "dji_sdk_provided"               : 'com.dji:dji-sdk-provided:4.14-trial1',
+            "dji_sdk"                        : 'com.dji:dji-sdk:4.15',
+            "dji_sdk_provided"               : 'com.dji:dji-sdk-provided:4.15',
             "dji_uxsdk"                      : 'com.dji:dji-uxsdk:4.14-trial1',
             //-------------
 
@@ -105,7 +105,7 @@ ext {
             "zbar-wrapper"                   : "cn.bingoogolapple:bga-qrcode-zbar:1.3.7",
 
             //OSS
-            "ali_OSS"                        : 'com.aliyun.dpa:oss-android-sdk:2.9.2',
+            "ali_OSS"                        : 'com.aliyun.dpa:oss-android-sdk:2.9.6',
 
             "okio"                           : 'com.squareup.okio:okio:2.6.0',
             // Android 支持 Retrofit
@@ -128,6 +128,7 @@ ext {
             //3.1.0use kotlin
             "material_dialogs_core"          : "com.afollestad.material-dialogs:core:${github["MaterialDialogsVersion"]}",
             "material_dialogs_bottomsheets"  : "com.afollestad.material-dialogs:bottomsheets:${github["MaterialDialogsVersion"]}",
+            "material_dialogs_input"  : "com.afollestad.material-dialogs:input:${github["MaterialDialogsVersion"]}",
             "material_dialogs_lifecycle"     : "com.afollestad.material-dialogs:lifecycle:${github["MaterialDialogsVersion"]}",
             "license_dialog"                 : 'de.psdev.licensesdialog:licensesdialog:2.1.0',
             'xpop'                           : 'com.lxj:xpopup:2.0.0',

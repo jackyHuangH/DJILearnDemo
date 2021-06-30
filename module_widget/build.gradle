@@ -52,6 +52,7 @@ dependencies {
 
     api rootProject.ext.dependencies["material_dialogs_core"]
     api rootProject.ext.dependencies["material_dialogs_bottomsheets"]
+    api rootProject.ext.dependencies["material_dialogs_input"]
     api rootProject.ext.dependencies["material_dialogs_lifecycle"]
 
     implementation rootProject.ext.dependencies["immersionbar"]

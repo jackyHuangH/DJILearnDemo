@@ -69,7 +69,7 @@ object FileUtils {
      * @param path
      * @return
      */
-    fun sudorm(path: String?): Boolean = open(path)?.sudorm() ?: false
+    fun sudoRmFileOrDir(path: String?): Boolean = open(path)?.sudoRmFileOrDir() ?: false
 
     /**
      * 获取文件夹名称
@@ -142,10 +142,11 @@ object FileUtils {
      * @param path
      * @return
      */
-    fun getFileExtension(path: String?): String? = path?.takeIf { it.isNotEmpty() }?.apply {
-        lastIndexOf(FILE_EXTENSION_SEPARATOR).takeIf { it > 0 }
-            ?.takeIf { lastIndexOf(File.separator) < it }
-            ?.let { substring(it + 1) }
+    fun getFileExtension(path: String?): String? = path?.takeIf { it.isNotEmpty() }?.run {
+        lastIndexOf(FILE_EXTENSION_SEPARATOR).takeIf { it > 0 && it < path.length - 1 }
+            ?.let { lastIndex ->
+                substring(lastIndex + 1)
+            }
     }
 }
 
@@ -165,7 +166,7 @@ fun File.rmdir(): Boolean =
 /**
  * 强制删除文件（文件夹）
  */
-fun File.sudorm(): Boolean = safelyRun {
+fun File.sudoRmFileOrDir(): Boolean = safelyRun {
     when {
         isDirectory -> listFiles()?.forEach { file -> file.delete() }
         isFile -> delete()

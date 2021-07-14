@@ -89,6 +89,7 @@ class MainActivity : BaseVMActivity<MainViewModel>() {
                 }
                 mIsStartStream = mIsStartStream.not()
                 text = if (mIsStartStream) "关闭RTMP推流" else "开启RTMP推流"
+                keepScreenOn = mIsStartStream
             }
         }
         viewClickListenerExt(R.id.btn_live_info) {
@@ -131,9 +132,9 @@ class MainActivity : BaseVMActivity<MainViewModel>() {
         }
     }
 
-    private fun jumpMediaCenter(uploadFile: Boolean) {
+    private fun jumpMediaCenter(isUploadFile: Boolean) {
         startActivity(Intent(this, MediaManageActivity::class.java).apply {
-            putExtra(MediaManageActivity.EXTRA_UPLOAD_FLAG, uploadFile)
+            putExtra(MediaManageActivity.EXTRA_UPLOAD_FLAG, isUploadFile)
         })
     }
 

@@ -3,6 +3,8 @@ package com.zenchn.widget
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.StringRes
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -34,6 +36,7 @@ class DefaultUiDelegate(context: Context) : IUiDelegate {
 
     private val contextRef: WeakReference<Context> = WeakReference(context)
     private var loadingDialog: Dialog? = null//全局只允许一个dialog实例
+    private val uiHandler by lazy { Handler(Looper.getMainLooper()) }
 
     init {
         if (context is LifecycleOwner) {
@@ -69,10 +72,8 @@ class DefaultUiDelegate(context: Context) : IUiDelegate {
             } else {
                 msg
             }?.let { msg ->
-                (this as? Activity)?.let {
-                    runOnUiThread {
-                        ToastUtils.show(msg.toString())
-                    }
+                uiHandler.post {
+                    ToastUtils.show(msg.toString())
                 }
             }
         }
@@ -81,6 +82,7 @@ class DefaultUiDelegate(context: Context) : IUiDelegate {
     override fun detachedFromView() {
         hideProgress()
         contextRef.clear()
+        uiHandler.removeCallbacksAndMessages(null)
     }
 }
 

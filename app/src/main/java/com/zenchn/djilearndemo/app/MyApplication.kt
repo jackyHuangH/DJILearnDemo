@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
 import androidx.multidex.MultiDexApplication
@@ -84,7 +83,7 @@ object ApplicationKit {
         nm.cancelAll()
     }
 
-    private fun registerDji() {
+    public fun registerDji() {
         //Check the permissions before registering the application for android system 6.0 above.
         val permissionCheck =
             ContextCompat.checkSelfPermission(mApplicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -95,8 +94,7 @@ object ApplicationKit {
                 //This is used to start SDK services and initiate SDK.
                 DJISDKManager.getInstance().registerApp(mApplicationContext, mDJISDKManagerCallback)
             } else {
-                Toast.makeText(mApplicationContext, "Please check if the permission is granted.", Toast.LENGTH_LONG)
-                    .show()
+                ToastUtils.show("请授予相关权限，否则无法正常使用！")
             }
         } catch (e: Exception) {
             e.printStackTrace()

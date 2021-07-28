@@ -141,7 +141,7 @@ ext {
             "Android_Pickerview"             : 'com.contrarywind:Android-PickerView:4.1.9',
 
             //运行时权限
-            "andPermission"                  : 'com.yanzhenjie.permission:support:2.0.1',
+            "andPermission"                  : 'com.yanzhenjie:permission:2.0.3',
 
             "pyg-update"                     : "com.pgyersdk:sdk:3.0.10",
             "xiaomi-update"                  : "mi-appstore:xiaomi-update-sdk:4.0.3",

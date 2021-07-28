@@ -168,28 +168,32 @@
             android:text="开始rtmp推流" />
 
         <Button
-            android:id="@+id/btn_live_info"
+            android:id="@+id/btn_set_freq"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/btn_start_rtmp"
             android:layout_toEndOf="@+id/btn_start_rtmp"
-            android:text="show live Info" />
+            android:text="设置上报频率" />
+
+        <Button
+            android:id="@+id/btn_live_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_start_rtmp"
+            android:layout_alignStart="@+id/btn_start_rtmp"
+            android:text="liveInfo"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <Button
             android:id="@+id/btn_waypoint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_start_rtmp"
-            android:layout_alignStart="@+id/btn_start_rtmp"
-            android:text="waypoint" />
-
-        <Button
-            android:id="@+id/btn_set_freq"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_start_rtmp"
-            android:layout_toEndOf="@+id/btn_waypoint"
-            android:text="设置上报频率" />
+            android:layout_toEndOf="@+id/btn_live_info"
+            android:text="waypoint"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </RelativeLayout>
 

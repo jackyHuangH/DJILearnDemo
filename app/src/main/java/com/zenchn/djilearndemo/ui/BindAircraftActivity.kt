@@ -3,12 +3,13 @@ package com.zenchn.djilearndemo.ui
 import android.Manifest
 import android.app.Application
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
 import com.hjq.toast.ToastUtils
+import com.zenchn.common.frame.IPermission
+import com.zenchn.common.frame.applySelfPermissions
 import com.zenchn.djilearndemo.R
+import com.zenchn.djilearndemo.app.ApplicationKit
 import com.zenchn.djilearndemo.base.BaseVMActivity
 import com.zenchn.djilearndemo.base.BaseViewModel
 import com.zenchn.djilearndemo.event.AircraftConnectEvent
@@ -34,7 +35,7 @@ import org.greenrobot.eventbus.ThreadMode
  * desc  ：无人机账户绑定
  * record：
  */
-class BindAircraftActivity : BaseVMActivity<BindAircraftViewModel>() {
+class BindAircraftActivity : BaseVMActivity<BindAircraftViewModel>(), IPermission {
 
     private var appActivationManager: AppActivationManager? = null
     private val activationStateListener: AppActivationStateListener = AppActivationStateListener { appActivationState ->
@@ -125,28 +126,26 @@ class BindAircraftActivity : BaseVMActivity<BindAircraftViewModel>() {
         // When the compile and target version is higher than 22, please request the
         // following permissions at runtime to ensure the
         // SDK work well.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.VIBRATE,
-                    Manifest.permission.INTERNET,
-                    Manifest.permission.ACCESS_WIFI_STATE,
-                    Manifest.permission.WAKE_LOCK,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_NETWORK_STATE,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.CHANGE_WIFI_STATE,
-                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.SYSTEM_ALERT_WINDOW,
-                    Manifest.permission.BLUETOOTH,
-                    Manifest.permission.BLUETOOTH_ADMIN,
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.RECORD_AUDIO
-                ), 1
-            )
+        applySelfPermissions(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.VIBRATE,
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.WAKE_LOCK,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CHANGE_WIFI_STATE,
+            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.RECORD_AUDIO
+        ) { list, granted ->
+            ApplicationKit.registerDji()
         }
     }
 

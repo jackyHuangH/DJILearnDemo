@@ -12,6 +12,7 @@ import com.zenchn.api.entity.LiveFlowInfo
 import com.zenchn.api.service.liveUploadService
 import com.zenchn.common.utils.LoggerKit
 import com.zenchn.common.utils.PreferenceUtil
+import com.zenchn.djilearndemo.BuildConfig
 import com.zenchn.djilearndemo.R
 import com.zenchn.djilearndemo.app.ApplicationKit
 import com.zenchn.djilearndemo.base.BaseVMActivity
@@ -19,10 +20,7 @@ import com.zenchn.djilearndemo.base.BaseViewModel
 import com.zenchn.djilearndemo.base.httpRequest
 import com.zenchn.djilearndemo.base.shareLiveFlowInfo
 import com.zenchn.djilearndemo.task.LiveUploadAircraftInfoTask
-import com.zenchn.widget.lifecycleOwner
-import com.zenchn.widget.setOnAntiShakeClickListener
-import com.zenchn.widget.viewClickListenerExt
-import com.zenchn.widget.viewExt
+import com.zenchn.widget.*
 import dji.common.error.DJIError
 import dji.common.util.CommonCallbacks
 import dji.sdk.products.Aircraft
@@ -58,6 +56,10 @@ class MainActivity : BaseVMActivity<MainViewModel>() {
     }
 
     override fun initWidget() {
+        if (BuildConfig.DEBUG) {
+            viewVisibleExt(R.id.btn_live_info, true)
+            viewVisibleExt(R.id.btn_waypoint, true)
+        }
         viewClickListenerExt(R.id.btn_mediaManager) {
             if (ApplicationKit.aircraftIsConnect().not()) {
                 showMessage("飞机未连接")
